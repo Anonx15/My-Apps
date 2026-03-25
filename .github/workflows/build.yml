@@ -1,0 +1,47 @@
+name: Build Kitty
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:base-devel
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup system
+        run: |
+          pacman-key --init
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm --needed \
+            clang lld compiler-rt \
+            python3 go \
+            cairo dbus freetype2 fontconfig harfbuzz \
+            hicolor-icon-theme lcms2 libgl libpng librsync \
+            libx11 libxcursor libxkbcommon libxkbcommon-x11 libxi \
+            libxinerama libxrandr \
+            openssl wayland wayland-protocols xxhash zlib \
+            simde ttf-nerd-fonts-symbols-mono ncurses
+
+      - name: Create build user
+        run: |
+          useradd -m builder
+          echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+          mkdir -p /home/builder/kitty
+          cp PKGBUILD /home/builder/kitty/
+          chown -R builder:builder /home/builder/kitty
+
+      - name: Build package
+        run: |
+          cd /home/builder/kitty
+          su builder -c "makepkg -s --noconfirm --skippgpcheck"
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: kitty-fx4320
+          path: /home/builder/kitty/*.pkg.tar.zst
