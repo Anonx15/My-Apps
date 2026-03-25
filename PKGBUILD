@@ -63,7 +63,7 @@ build() {
 
     export KITTY_NO_LTO=1
 
-    local _cflags_go="-march=bdver2 -O3 -ffunction-sections -fdata-sections -fomit-frame-pointer"
+    local _cflags_go="-march=x86-64-v2 -O3 -ffunction-sections -fdata-sections -fomit-frame-pointer"
     local _ldflags_go="-fuse-ld=lld -Wl,--gc-sections -Wl,--icf=safe -Wl,--as-needed -Wl,-O2 -Wl,-z,relro,-z,now"
 
     export CGO_CPPFLAGS=""
