@@ -55,7 +55,7 @@ build() {
     export RANLIB="llvm-ranlib"
     export STRIP="llvm-strip"
 
-    export CFLAGS="-march=bdver2 -O3 -flto=thin -ffunction-sections -fdata-sections -fomit-frame-pointer"
+    export CFLAGS="-march=x86-64-v2 -mtune=bdver2 -mavx -mfma -maes -mbmi -mf16c -O3 -flto=thin -ffunction-sections -fdata-sections -fomit-frame-pointer"
     export CXXFLAGS="${CFLAGS}"
     export CPPFLAGS=""
 
